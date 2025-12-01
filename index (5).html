@@ -1,0 +1,2184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data Structures: BST, Hash Tables, Red-Black Trees</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+
+        header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        header p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+
+        .nav-tabs {
+            display: flex;
+            border-bottom: 2px solid #e0e0e0;
+            background: #f5f5f5;
+        }
+
+        .nav-tabs button {
+            flex: 1;
+            padding: 15px 20px;
+            border: none;
+            background: none;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: 600;
+            color: #666;
+            transition: all 0.3s ease;
+            border-bottom: 3px solid transparent;
+        }
+
+        .nav-tabs button:hover {
+            background: #eeeeee;
+        }
+
+        .nav-tabs button.active {
+            color: #667eea;
+            border-bottom-color: #667eea;
+        }
+
+        .content {
+            padding: 40px;
+            max-height: calc(100vh - 200px);
+            overflow-y: auto;
+        }
+
+        .section {
+            display: none;
+        }
+
+        .section.active {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        h2 {
+            color: #667eea;
+            font-size: 1.8em;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #667eea;
+            padding-bottom: 10px;
+        }
+
+        h3 {
+            color: #764ba2;
+            font-size: 1.3em;
+            margin-top: 25px;
+            margin-bottom: 15px;
+        }
+
+        p, li {
+            line-height: 1.8;
+            color: #333;
+            font-size: 1em;
+            margin-bottom: 12px;
+        }
+
+        ul, ol {
+            margin-left: 30px;
+            margin-bottom: 15px;
+        }
+
+        li {
+            margin-bottom: 8px;
+        }
+
+        .highlight {
+            background: #fff3cd;
+            padding: 15px;
+            border-left: 4px solid #ffc107;
+            margin: 20px 0;
+            border-radius: 4px;
+        }
+
+        .code-block {
+            background: #f8f9fa;
+            border-left: 4px solid #667eea;
+            padding: 15px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+            overflow-x: auto;
+            margin: 15px 0;
+            border-radius: 4px;
+        }
+
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+
+        .comparison-table th {
+            background: #667eea;
+            color: white;
+            padding: 12px;
+            text-align: left;
+        }
+
+        .comparison-table td {
+            border-bottom: 1px solid #ddd;
+            padding: 12px;
+        }
+
+        .comparison-table tr:hover {
+            background: #f5f5f5;
+        }
+
+        .visual-demo {
+            background: #f0f4ff;
+            border: 2px solid #667eea;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            text-align: center;
+        }
+
+        .visual-demo h4 {
+            color: #667eea;
+            margin-bottom: 15px;
+        }
+
+        .tree-node {
+            display: inline-flex;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #667eea;
+            color: white;
+            align-items: center;
+            justify-content: center;
+            margin: 0;
+            font-weight: bold;
+        }
+
+        .tree-node.red {
+            background: #dc3545;
+        }
+
+        .tree-node.black {
+            background: #333;
+        }
+
+        .case-box {
+            background: #e8f5e9;
+            border-left: 4px solid #4caf50;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 4px;
+        }
+
+        .case-box h4 {
+            color: #2e7d32;
+            margin-bottom: 10px;
+        }
+
+        .back-to-top {
+            text-align: center;
+            margin-top: 30px;
+        }
+
+        .back-to-top button {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.9em;
+        }
+
+        .back-to-top button:hover {
+            background: #764ba2;
+        }
+
+        .learning-objective {
+            background: #e3f2fd;
+            border-left: 4px solid #2196f3;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 4px;
+        }
+
+        .learning-objective strong {
+            color: #1565c0;
+        }
+
+        /* ---- Tree with edges (stable, aligned connectors) ---- */
+
+        .step-visual {
+            margin: 10px 0 20px;
+            text-align: center;
+        }
+
+        .tree {
+            display: inline-block;
+            padding-top: 20px;
+            position: relative;
+        }
+
+        .tree, .tree ul {
+            list-style-type: none;
+        }
+
+        .tree ul {
+            padding-top: 20px;
+            position: relative;
+        }
+
+        .tree li {
+            float: left;
+            text-align: center;
+            position: relative;
+            padding: 20px 5px 0 5px;
+        }
+
+        .tree li::before,
+        .tree li::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            border-top: 1px solid #aaa;
+            width: 50%;
+            height: 20px;
+        }
+
+        .tree li::before {
+            right: 50%;
+            border-right: 1px solid #aaa;
+        }
+
+        .tree li::after {
+            left: 50%;
+            border-left: 1px solid #aaa;
+        }
+
+        .tree li:only-child::before,
+        .tree li:only-child::after {
+            display: none;
+        }
+
+        .tree li:only-child {
+            padding-top: 0;
+        }
+
+        .tree ul::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 50%;
+            border-left: 1px solid #aaa;
+            width: 0;
+            height: 20px;
+        }
+
+        .tree li > .tree-node {
+            margin: 0 auto;
+            display: inline-flex;
+        }
+
+        /* ---- Interactive Question Styles ---- */
+
+        .question-section {
+            margin-top: 30px;
+            border-top: 1px dashed #ddd;
+            padding-top: 20px;
+        }
+
+        .question-section h3 {
+            margin-top: 0;
+        }
+
+        .question-card {
+            background: #f8f9ff;
+            border-left: 4px solid #667eea;
+            padding: 15px 18px;
+            margin-bottom: 18px;
+            border-radius: 8px;
+        }
+
+        .question-title {
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .question-text {
+            margin-bottom: 10px;
+        }
+
+        .question-meta {
+            font-size: 0.85em;
+            color: #666;
+            margin-bottom: 8px;
+        }
+
+        .solution {
+            margin-top: 10px;
+            display: none;
+        }
+
+        .solution.visible {
+            display: block;
+        }
+
+        .solution-steps {
+            margin-left: 22px;
+        }
+
+        .solution-steps li {
+            margin-bottom: 6px;
+        }
+
+        .hash-table-visual {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+            margin: 10px 0;
+        }
+
+        .hash-slot {
+            min-width: 60px;
+            padding: 6px 8px;
+            border-radius: 6px;
+            border: 1px solid #667eea;
+            background: #ffffff;
+            font-size: 0.8em;
+            text-align: center;
+        }
+
+        .hash-slot .slot-index {
+            font-weight: 700;
+            display: block;
+            margin-bottom: 2px;
+        }
+
+        .hash-slot.filled {
+            background: #e3f2fd;
+        }
+
+        .hash-slot.highlight {
+            box-shadow: 0 0 6px rgba(102, 126, 234, 0.6);
+            border-width: 2px;
+        }
+
+        button.reveal-btn,
+        button.step-btn {
+            margin-top: 10px;
+            border: none;
+            border-radius: 5px;
+            padding: 8px 14px;
+            cursor: pointer;
+            font-size: 0.9em;
+            font-weight: 500;
+            color: #fff;
+            background: #667eea;
+        }
+
+        button.step-btn {
+            background: #764ba2;
+            margin-left: 8px;
+        }
+
+        button.reveal-btn:hover,
+        button.step-btn:hover {
+            filter: brightness(1.05);
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <header>
+        <h1>Data Structures and Algorithms</h1>
+        <p>Exam Review for Binary Search Trees, Hash Tables, and Red-Black Trees</p>
+    </header>
+
+    <div class="nav-tabs">
+        <button class="tab-btn active" onclick="openTab('bst', this)">Binary Search Trees</button>
+        <button class="tab-btn" onclick="openTab('hashtables', this)">Hash Tables</button>
+        <button class="tab-btn" onclick="openTab('rbtrees', this)">Red-Black Trees</button>
+    </div>
+
+    <div class="content">
+        <!-- ====================== BST SECTION ====================== -->
+        <div id="bst" class="section active">
+            <h2>Binary Search Tree Deep Dive</h2>
+            <p>Understanding BST operations through interactive visualizations</p>
+
+            <div class="learning-objective">
+                <strong>Learning Objectives:</strong> Understand BST structure, search, insert, delete operations, and traversal methods
+            </div>
+
+            <h3>BST Foundation</h3>
+            <h4>What is a Binary Search Tree?</h4>
+            <p>A Binary Search Tree (BST) is a hierarchical data structure where:</p>
+            <ul>
+                <li>Each node has at most two children</li>
+                <li>Left child &lt; Parent &lt; Right child</li>
+                <li>All operations average O(log n) time</li>
+                <li>In-order traversal gives sorted sequence</li>
+            </ul>
+
+            <h3>BST Search Operation</h3>
+            <h4>How Search Works</h4>
+            <p>Starting from root, compare target with current node:</p>
+            <ul>
+                <li><strong>If equal:</strong> Found!</li>
+                <li><strong>If target &lt; current:</strong> Go left</li>
+                <li><strong>If target &gt; current:</strong> Go right</li>
+                <li><strong>If null reached:</strong> Not found</li>
+            </ul>
+
+            <h3>BST Insert Operation</h3>
+            <h4>Building a Tree Step by Step</h4>
+            <p>Watch how values [8,3,10,1,6,14,4,7,13] build our BST:</p>
+            <div class="visual-demo">
+                <h4>BST Insert Sequence</h4>
+                <p>8 → (3,10) → (1,6) → (14) → (4,7) → (13)</p>
+                <p style="font-size: 0.9em; color: #666; margin-top: 10px;">Each value finds its correct position maintaining BST property</p>
+            </div>
+
+            <div class="highlight">
+                <strong>🧩 Visual Problem:</strong> Where would value 5 be inserted in our tree?
+                <p style="margin-top: 10px;"><em>Answer: Between 4 and 6 as right child of 4</em></p>
+            </div>
+
+            <h3>BST Delete Operation</h3>
+            <h4>Three Deletion Cases</h4>
+            <ul>
+                <li><strong>Leaf node:</strong> Simply remove</li>
+                <li><strong>One child:</strong> Replace with child</li>
+                <li><strong>Two children:</strong> Replace with inorder successor</li>
+            </ul>
+
+            <h3>BST Traversals</h3>
+            <h4>Three Traversal Methods</h4>
+            <table class="comparison-table">
+                <tr>
+                    <th>Traversal</th>
+                    <th>Order</th>
+                    <th>Use Case</th>
+                </tr>
+                <tr>
+                    <td><strong>Inorder</strong></td>
+                    <td>Left → Root → Right</td>
+                    <td>Sorted sequence</td>
+                </tr>
+                <tr>
+                    <td><strong>Preorder</strong></td>
+                    <td>Root → Left → Right</td>
+                    <td>Tree copy</td>
+                </tr>
+                <tr>
+                    <td><strong>Postorder</strong></td>
+                    <td>Left → Right → Root</td>
+                    <td>Tree deletion</td>
+                </tr>
+            </table>
+
+            <h3>DFS on Graphs</h3>
+            <h4>DFS on Complex Graph Structure</h4>
+            <p>DFS works on graphs similar to tree traversal:</p>
+            <ul>
+                <li>Stack-based execution shows deep exploration</li>
+                <li>Creates a spanning tree structure</li>
+                <li>Back edges connect to already visited vertices</li>
+                <li>Similar to pre-order traversal pattern</li>
+            </ul>
+
+            <div class="highlight">
+                <strong>🧩 DFS Pattern Recognition:</strong> What traversal pattern does DFS resemble?
+                <p style="margin-top: 10px;"><em>Answer: Pre-order traversal (visit node before children)</em></p>
+            </div>
+
+            <!-- BST Practice Questions -->
+            <div class="question-section">
+                <h3>Interactive BST & DFS Practice</h3>
+
+                <!-- BST Question 1 -->
+                <div class="question-card" id="bst-q1">
+                    <div class="question-title">Question 1: Cascading BST Deletions</div>
+                    <p class="question-text">
+                        Starting from the BST constructed by inserting the keys
+                        [8, 3, 10, 1, 6, 14, 4, 7, 13] in that order:
+                    </p>
+                    <ul>
+                        <li>Delete the keys in the order 3, 14, 8.</li>
+                        <li>For each deletion, identify whether it is a leaf, one-child, or two-child case.</li>
+                        <li>Draw the resulting tree after each deletion and give the final in-order traversal.</li>
+                    </ul>
+                    <button class="reveal-btn">Reveal Solution</button>
+                    <div class="solution">
+                        <p><strong>Idea:</strong> Apply the three BST deletion cases and carefully update the tree after each operation.</p>
+                        <ol class="solution-steps">
+                            <li class="solution-step">
+                                <strong>Step 1 – Original tree.</strong>
+                                <div class="step-visual">
+                                    <ul class="tree">
+                                        <li>
+                                            <span class="tree-node">8</span>
+                                            <ul>
+                                                <li>
+                                                    <span class="tree-node">3</span>
+                                                    <ul>
+                                                        <li><span class="tree-node">1</span></li>
+                                                        <li>
+                                                            <span class="tree-node">6</span>
+                                                            <ul>
+                                                                <li><span class="tree-node">4</span></li>
+                                                                <li><span class="tree-node">7</span></li>
+                                                            </ul>
+                                                        </li>
+                                                    </ul>
+                                                </li>
+                                                <li>
+                                                    <span class="tree-node">10</span>
+                                                    <ul>
+                                                        <li>
+                                                            <span class="tree-node">14</span>
+                                                            <ul>
+                                                                <li><span class="tree-node">13</span></li>
+                                                            </ul>
+                                                        </li>
+                                                    </ul>
+                                                </li>
+                                            </ul>
+                                        </li>
+                                    </ul>
+                                </div>
+                                This satisfies the BST property: all left keys &lt; parent &lt; all right keys.
+                            </li>
+                            <li class="solution-step">
+                                <strong>Step 2 – Delete 3 (two-child case).</strong>
+                                <ul>
+                                    <li>Node 3 has two children (1 and 6) ⟶ use its in-order successor.</li>
+                                    <li>In-order successor = minimum of right subtree of 3 ⟶ node 4.</li>
+                                    <li>Copy key 4 into node 3, then delete the leaf node 4 under node 6.</li>
+                                </ul>
+                                <div class="step-visual">
+                                    <ul class="tree">
+                                        <li>
+                                            <span class="tree-node">8</span>
+                                            <ul>
+                                                <li>
+                                                    <span class="tree-node">4</span>
+                                                    <ul>
+                                                        <li><span class="tree-node">1</span></li>
+                                                        <li>
+                                                            <span class="tree-node">6</span>
+                                                            <ul>
+                                                                <li><span class="tree-node">7</span></li>
+                                                            </ul>
+                                                        </li>
+                                                    </ul>
+                                                </li>
+                                                <li>
+                                                    <span class="tree-node">10</span>
+                                                    <ul>
+                                                        <li>
+                                                            <span class="tree-node">14</span>
+                                                            <ul>
+                                                                <li><span class="tree-node">13</span></li>
+                                                            </ul>
+                                                        </li>
+                                                    </ul>
+                                                </li>
+                                            </ul>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </li>
+                            <li class="solution-step">
+                                <strong>Step 3 – Delete 14 (one-child case).</strong>
+                                <ul>
+                                    <li>Node 14 has a single left child 13.</li>
+                                    <li>Replace 14 by its child 13.</li>
+                                </ul>
+                                <div class="step-visual">
+                                    <ul class="tree">
+                                        <li>
+                                            <span class="tree-node">8</span>
+                                            <ul>
+                                                <li>
+                                                    <span class="tree-node">4</span>
+                                                    <ul>
+                                                        <li><span class="tree-node">1</span></li>
+                                                        <li>
+                                                            <span class="tree-node">6</span>
+                                                            <ul>
+                                                                <li><span class="tree-node">7</span></li>
+                                                            </ul>
+                                                        </li>
+                                                    </ul>
+                                                </li>
+                                                <li>
+                                                    <span class="tree-node">10</span>
+                                                    <ul>
+                                                        <li><span class="tree-node">13</span></li>
+                                                    </ul>
+                                                </li>
+                                            </ul>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </li>
+                            <li class="solution-step">
+                                <strong>Step 4 – Delete 8 (two-child case at the root).</strong>
+                                <ul>
+                                    <li>Root 8 has two children (4 and 10).</li>
+                                    <li>In-order successor is the minimum in the right subtree ⟶ node 10.</li>
+                                    <li>Copy 10 into the root, then delete the original node 10 (one-child node with child 13).</li>
+                                </ul>
+                                <div class="step-visual">
+                                    <ul class="tree">
+                                        <li>
+                                            <span class="tree-node">10</span>
+                                            <ul>
+                                                <li>
+                                                    <span class="tree-node">4</span>
+                                                    <ul>
+                                                        <li><span class="tree-node">1</span></li>
+                                                        <li>
+                                                            <span class="tree-node">6</span>
+                                                            <ul>
+                                                                <li><span class="tree-node">7</span></li>
+                                                            </ul>
+                                                        </li>
+                                                    </ul>
+                                                </li>
+                                                <li>
+                                                    <span class="tree-node">13</span>
+                                                </li>
+                                            </ul>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </li>
+                            <li class="solution-step">
+                                <strong>Step 5 – Final in-order traversal.</strong>
+                                <p>In-order (Left → Root → Right) on the final tree gives:</p>
+                                <p><code>[1, 4, 6, 7, 10, 13]</code></p>
+                            </li>
+                        </ol>
+                        <button class="step-btn">Show Next Step</button>
+                    </div>
+                </div>
+
+                <!-- BST Question 2 -->
+                <div class="question-card" id="bst-q2">
+                    <div class="question-title">Question 2: Search Path and Cost</div>
+                    <p class="question-text">
+                        Using the original BST from Question 1 (before any deletions), trace the search paths for keys 7 and 2.
+                    </p>
+                    <ul>
+                        <li>List the nodes visited for each search in order.</li>
+                        <li>Count the number of key comparisons.</li>
+                        <li>Explain why unsuccessful searches in a BST still take O(h) time (h = tree height).</li>
+                    </ul>
+                    <button class="reveal-btn">Reveal Solution</button>
+                    <div class="solution">
+                        <p><strong>Idea:</strong> Follow the rule “go left if the key is smaller, right if it is larger”.</p>
+                        <ol class="solution-steps">
+                            <li class="solution-step">
+                                <strong>Step 1 – Search for 7 (successful).</strong>
+                                <p>Path for key 7:</p>
+                                <ul>
+                                    <li>Compare with 8 ⟶ 7 &lt; 8 ⟶ go left to 3.</li>
+                                    <li>Compare with 3 ⟶ 7 &gt; 3 ⟶ go right to 6.</li>
+                                    <li>Compare with 6 ⟶ 7 &gt; 6 ⟶ go right to 7.</li>
+                                    <li>Compare with 7 ⟶ match found.</li>
+                                </ul>
+                                <p><strong>Visited nodes:</strong> 8 → 3 → 6 → 7 ⇒ 4 key comparisons.</p>
+                            </li>
+                            <li class="solution-step">
+                                <strong>Step 2 – Search for 2 (unsuccessful).</strong>
+                                <p>Path for key 2:</p>
+                                <ul>
+                                    <li>Compare with 8 ⟶ 2 &lt; 8 ⟶ go left to 3.</li>
+                                    <li>Compare with 3 ⟶ 2 &lt; 3 ⟶ go left to 1.</li>
+                                    <li>Compare with 1 ⟶ 2 &gt; 1 ⟶ go right to <code>null</code>.</li>
+                                    <li>Reaching <code>null</code> means 2 is not in the tree.</li>
+                                </ul>
+                                <p>We did 3 key comparisons (with 8, 3, 1) plus the final <em>null</em> check.</p>
+                            </li>
+                            <li class="solution-step">
+                                <strong>Step 3 – Relating cost to height.</strong>
+                                <ul>
+                                    <li>Each comparison takes us one level down the tree.</li>
+                                    <li>The longest possible path from the root has length equal to the tree height h.</li>
+                                    <li>Therefore, both successful and unsuccessful BST searches run in O(h) time.</li>
+                                    <li>If the tree is balanced, h = O(log n); if it is skewed, h = O(n).</li>
+                                </ul>
+                            </li>
+                        </ol>
+                        <button class="step-btn">Show Next Step</button>
+                    </div>
+                </div>
+
+                <!-- BST Question 3 -->
+                <div class="question-card" id="bst-q3">
+                    <div class="question-title">Question 3: Balanced vs. Skewed BST Shapes</div>
+                    <p class="question-text">
+                        Consider inserting the keys [1, 2, 3, 4, 5, 6, 7] into:
+                    </p>
+                    <ul>
+                        <li>(a) An initially empty BST by inserting them in that order.</li>
+                        <li>(b) A perfectly balanced BST built from the same keys (for example, by inserting the median first, then recursively).</li>
+                    </ul>
+                    <p class="question-meta">Compare the resulting heights and the worst-case search costs.</p>
+                    <button class="reveal-btn">Reveal Solution</button>
+                    <div class="solution">
+                        <ol class="solution-steps">
+                            <li class="solution-step">
+                                <strong>Step 1 – Case (a): Sorted insertion → skewed tree.</strong>
+                                <p>Insert 1, 2, 3, 4, 5, 6, 7 into an empty BST in that order:</p>
+                                <div class="step-visual">
+                                    <ul class="tree">
+                                        <li>
+                                            <span class="tree-node">1</span>
+                                            <ul>
+                                                <li>
+                                                    <span class="tree-node">2</span>
+                                                    <ul>
+                                                        <li>
+                                                            <span class="tree-node">3</span>
+                                                            <ul>
+                                                                <li>
+                                                                    <span class="tree-node">4</span>
+                                                                    <ul>
+                                                                        <li>
+                                                                            <span class="tree-node">5</span>
+                                                                            <ul>
+                                                                                <li>
+                                                                                    <span class="tree-node">6</span>
+                                                                                    <ul>
+                                                                                        <li><span class="tree-node">7</span></li>
+                                                                                    </ul>
+                                                                                </li>
+                                                                            </ul>
+                                                                        </li>
+                                                                    </ul>
+                                                                </li>
+                                                            </ul>
+                                                        </li>
+                                                    </ul>
+                                                </li>
+                                            </ul>
+                                        </li>
+                                    </ul>
+                                </div>
+                                <ul>
+                                    <li>Each new key is larger than all previous ones ⟶ always inserted as the right child of the bottom node.</li>
+                                    <li>The tree degenerates into a linked list of length 7.</li>
+                                    <li><strong>Height h<sub>skewed</sub> = 6</strong> (root at level 0, leaf 7 at level 6).</li>
+                                </ul>
+                            </li>
+                            <li class="solution-step">
+                                <strong>Step 2 – Case (b): Perfectly balanced BST.</strong>
+                                <p>Take 4 as root (the median), then 2 and 6 as its children, etc. One possible perfectly balanced BST is:</p>
+                                <div class="step-visual">
+                                    <ul class="tree">
+                                        <li>
+                                            <span class="tree-node">4</span>
+                                            <ul>
+                                                <li>
+                                                    <span class="tree-node">2</span>
+                                                    <ul>
+                                                        <li><span class="tree-node">1</span></li>
+                                                        <li><span class="tree-node">3</span></li>
+                                                    </ul>
+                                                </li>
+                                                <li>
+                                                    <span class="tree-node">6</span>
+                                                    <ul>
+                                                        <li><span class="tree-node">5</span></li>
+                                                        <li><span class="tree-node">7</span></li>
+                                                    </ul>
+                                                </li>
+                                            </ul>
+                                        </li>
+                                    </ul>
+                                </div>
+                                <ul>
+                                    <li>All levels except possibly the last are completely full.</li>
+                                    <li><strong>Height h<sub>balanced</sub> = 2</strong> (levels 0, 1, 2).</li>
+                                </ul>
+                            </li>
+                            <li class="solution-step">
+                                <strong>Step 3 – Impact on search complexity.</strong>
+                                <ul>
+                                    <li>Worst-case search in a BST is proportional to the height h.</li>
+                                    <li>Skewed tree: h = 6 ⇒ O(7) = O(n) steps in the worst case.</li>
+                                    <li>Balanced tree: h = 2 ⇒ O(log₂ 7) steps ≈ O(log n).</li>
+                                    <li>This is why self-balancing trees (AVL, Red-Black) are so valuable: they prevent the O(n) worst-case behavior.</li>
+                                </ul>
+                            </li>
+                        </ol>
+                        <button class="step-btn">Show Next Step</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ====================== HASH TABLES SECTION ====================== -->
+        <div id="hashtables" class="section">
+            <h2>Fast Data Retrieval with O(1) Average Time</h2>
+            <p>An introduction to hash tables and their importance in computer science</p>
+
+            <div class="learning-objective">
+                <strong>Learning Objectives:</strong> Understand hash functions, collision resolution, and practical applications
+            </div>
+
+            <h3>Why Hash Tables Matter</h3>
+            <p>Hash tables allow very fast retrieval of data regardless of dataset size.</p>
+            <ul>
+                <li><strong>Problem solved:</strong> Linear search takes O(n) time</li>
+                <li><strong>Solution:</strong> Array access is O(1)</li>
+                <li>Access time is independent of array size</li>
+            </ul>
+
+            <h3>Hash Function Fundamentals</h3>
+            <h4>Calculating the Index</h4>
+            <p><strong>For numeric keys:</strong></p>
+            <div class="code-block">address = key mod n (where n is array size)</div>
+
+            <p><strong>For alphanumeric keys:</strong></p>
+            <div class="code-block">
+                Sum each character's ASCII value, then apply mod n
+            </div>
+
+            <h3>Hash Function Example: Cartoon Characters</h3>
+            <p>Array size = 11</p>
+            <table class="comparison-table">
+                <tr>
+                    <th>Character</th>
+                    <th>Calculation</th>
+                    <th>Index</th>
+                </tr>
+                <tr>
+                    <td>FRED</td>
+                    <td>F(70)+r(114)+e(101)+d(100) = 385 mod 11</td>
+                    <td>0</td>
+                </tr>
+                <tr>
+                    <td>TWEETY</td>
+                    <td>T(84)+w(119)+e(101)+e(101)+t(116)+y(121) = 642 mod 11</td>
+                    <td>4</td>
+                </tr>
+                <tr>
+                    <td>BUGS</td>
+                    <td>B(66)+u(117)+g(103)+s(115) = 401 mod 11</td>
+                    <td>5</td>
+                </tr>
+                <tr>
+                    <td>SCOOBY</td>
+                    <td>S(83)+c(99)+o(111)+o(111)+b(98)+y(121) = 623 mod 11</td>
+                    <td>7</td>
+                </tr>
+            </table>
+
+            <h3>Collisions and Resolution</h3>
+            <p><strong>Collision:</strong> When two different keys hash to the same index</p>
+
+            <h4>Linear Probing</h4>
+            <p>If calculated position is occupied, find the next available slot:</p>
+            <div class="highlight">
+                <strong>Example:</strong> "Porky" hashes to index 5 (occupied by Bugs)
+                <ul style="margin-top: 10px;">
+                    <li>Check index 6: occupied (Daffy)</li>
+                    <li>Check index 7: occupied (Scooby)</li>
+                    <li>Check index 8: empty! ✓ Place Porky here</li>
+                </ul>
+            </div>
+
+            <h4>Alternative Collision Strategies</h4>
+            <ul>
+                <li><strong>Quadratic Probing:</strong> Use quadratic distances (1², 2², 3²) to reduce clustering</li>
+                <li><strong>Plus-3 Rehash:</strong> Check every 3rd position</li>
+                <li><strong>Double Hashing:</strong> Apply second hash function to determine step size</li>
+                <li><strong>Chaining:</strong> Each position has linked list for colliding items</li>
+            </ul>
+
+            <h3>Load Factor and Performance</h3>
+            <p><strong>Load Factor = Number of Items / Array Size</strong></p>
+            <p><strong>Best practice:</strong> Keep load factor ≤ 0.7 (70% occupancy)</p>
+
+            <h4>Dynamic Resizing</h4>
+            <p>When load factor exceeds threshold:</p>
+            <ol>
+                <li>Create new array (typically 2× size)</li>
+                <li>Rehash all items into new array</li>
+                <li>Replace old array with new array</li>
+            </ol>
+
+            <h3>Performance Analysis</h3>
+            <table class="comparison-table">
+                <tr>
+                    <th>Scenario</th>
+                    <th>Time Complexity</th>
+                    <th>Explanation</th>
+                </tr>
+                <tr>
+                    <td><strong>Best Case</strong></td>
+                    <td>O(1)</td>
+                    <td>No collisions, direct access</td>
+                </tr>
+                <tr>
+                    <td><strong>Average Case</strong></td>
+                    <td>O(1)</td>
+                    <td>Good hash function, load factor &lt; 0.7</td>
+                </tr>
+                <tr>
+                    <td><strong>Worst Case</strong></td>
+                    <td>O(n)</td>
+                    <td>Many collisions or poor hash function</td>
+                </tr>
+            </table>
+
+            <h3>Hash Function Design</h3>
+            <h4>Good Hash Function Characteristics:</h4>
+            <ul>
+                <li>Deterministic (same input → same output)</li>
+                <li>Fast to compute</li>
+                <li>Distributes keys uniformly</li>
+                <li>Uses all available address space</li>
+                <li>Minimizes collisions</li>
+            </ul>
+
+            <h3>Perfect Hashing</h3>
+            <p><strong>Perfect hash function:</strong> Produces unique index for each key</p>
+            <ul>
+                <li><strong>Requirements:</strong> All keys must be known in advance</li>
+                <li><strong>Use cases:</strong> Compiler keywords, fixed configuration mappings</li>
+            </ul>
+
+            <h3>Real-World Applications</h3>
+            <p><strong>Examples in programming languages:</strong></p>
+            <ul>
+                <li>Java: HashMap, HashSet</li>
+                <li>Python: dict, set</li>
+                <li>JavaScript: Object, Map, Set</li>
+                <li>C++: unordered_map, unordered_set</li>
+            </ul>
+
+            <div class="highlight">
+                <strong>Key Takeaway:</strong> Hash tables trade space for time to achieve fast lookups!
+            </div>
+
+            <!-- Hash Table Practice Questions -->
+            <div class="question-section">
+                <h3>Interactive Hash Table Practice</h3>
+
+                <!-- Hash Question 1 -->
+                <div class="question-card" id="hash-q1">
+                    <div class="question-title">Question 1: Building a Hash Table with Linear Probing</div>
+                    <p class="question-text">
+                        Using a hash table of size 11 and <strong>linear probing</strong>, insert the keys in this order:
+                        FRED, TWEETY, BUGS, SCOOBY, DAFFY, PORKY.
+                    </p>
+                    <p class="question-meta">
+                        Assume the initial hash indices (from the cartoon example) are:
+                        FRED→0, TWEETY→4, BUGS→5, SCOOBY→7, DAFFY→6, PORKY→5.
+                    </p>
+                    <ul>
+                        <li>Show how the table evolves as you insert the keys.</li>
+                        <li>Count the collisions per key.</li>
+                        <li>Compute the final load factor.</li>
+                    </ul>
+                    <button class="reveal-btn">Reveal Solution</button>
+                    <div class="solution">
+                        <ol class="solution-steps">
+                            <li class="solution-step">
+                                <strong>Step 1 – Start with an empty table (size = 11).</strong>
+                                <div class="step-visual">
+                                    <div class="hash-table-visual">
+                                        <div class="hash-slot"><span class="slot-index">0</span>—</div>
+                                        <div class="hash-slot"><span class="slot-index">1</span>—</div>
+                                        <div class="hash-slot"><span class="slot-index">2</span>—</div>
+                                        <div class="hash-slot"><span class="slot-index">3</span>—</div>
+                                        <div class="hash-slot"><span class="slot-index">4</span>—</div>
+                                        <div class="hash-slot"><span class="slot-index">5</span>—</div>
+                                        <div class="hash-slot"><span class="slot-index">6</span>—</div>
+                                        <div class="hash-slot"><span class="slot-index">7</span>—</div>
+                                        <div class="hash-slot"><span class="slot-index">8</span>—</div>
+                                        <div class="hash-slot"><span class="slot-index">9</span>—</div>
+                                        <div class="hash-slot"><span class="slot-index">10</span>—</div>
+                                    </div>
+                                </div>
+                                All slots are empty; load factor = 0/11 = 0.
+                            </li>
+                            <li class="solution-step">
+                                <strong>Step 2 – Insert FRED, TWEETY, BUGS, SCOOBY, DAFFY.</strong>
+                                <ul>
+                                    <li>FRED → 0: slot 0 empty ⟶ place FRED at 0 (0 collisions).</li>
+                                    <li>TWEETY → 4: slot 4 empty ⟶ place TWEETY at 4 (0 collisions).</li>
+                                    <li>BUGS → 5: slot 5 empty ⟶ place BUGS at 5 (0 collisions).</li>
+                                    <li>SCOOBY → 7: slot 7 empty ⟶ place SCOOBY at 7 (0 collisions).</li>
+                                    <li>DAFFY → 6: slot 6 empty ⟶ place DAFFY at 6 (0 collisions).</li>
+                                </ul>
+                                <div class="step-visual">
+                                    <div class="hash-table-visual">
+                                        <div class="hash-slot filled"><span class="slot-index">0</span>FRED</div>
+                                        <div class="hash-slot"><span class="slot-index">1</span>—</div>
+                                        <div class="hash-slot"><span class="slot-index">2</span>—</div>
+                                        <div class="hash-slot"><span class="slot-index">3</span>—</div>
+                                        <div class="hash-slot filled"><span class="slot-index">4</span>TWEETY</div>
+                                        <div class="hash-slot filled"><span class="slot-index">5</span>BUGS</div>
+                                        <div class="hash-slot filled"><span class="slot-index">6</span>DAFFY</div>
+                                        <div class="hash-slot filled"><span class="slot-index">7</span>SCOOBY</div>
+                                        <div class="hash-slot"><span class="slot-index">8</span>—</div>
+                                        <div class="hash-slot"><span class="slot-index">9</span>—</div>
+                                        <div class="hash-slot"><span class="slot-index">10</span>—</div>
+                                    </div>
+                                </div>
+                                So far, <strong>5 items</strong>, load factor = 5/11 ≈ 0.45.
+                            </li>
+                            <li class="solution-step">
+                                <strong>Step 3 – Insert PORKY with linear probing.</strong>
+                                <ul>
+                                    <li>PORKY → 5: slot 5 contains BUGS ⟶ collision #1.</li>
+                                    <li>Probe index 6: contains DAFFY ⟶ collision #2.</li>
+                                    <li>Probe index 7: contains SCOOBY ⟶ collision #3.</li>
+                                    <li>Probe index 8: empty ⟶ place PORKY at 8.</li>
+                                </ul>
+                                <div class="step-visual">
+                                    <div class="hash-table-visual">
+                                        <div class="hash-slot filled"><span class="slot-index">0</span>FRED</div>
+                                        <div class="hash-slot"><span class="slot-index">1</span>—</div>
+                                        <div class="hash-slot"><span class="slot-index">2</span>—</div>
+                                        <div class="hash-slot"><span class="slot-index">3</span>—</div>
+                                        <div class="hash-slot filled"><span class="slot-index">4</span>TWEETY</div>
+                                        <div class="hash-slot filled highlight"><span class="slot-index">5</span>BUGS</div>
+                                        <div class="hash-slot filled highlight"><span class="slot-index">6</span>DAFFY</div>
+                                        <div class="hash-slot filled highlight"><span class="slot-index">7</span>SCOOBY</div>
+                                        <div class="hash-slot filled highlight"><span class="slot-index">8</span>PORKY</div>
+                                        <div class="hash-slot"><span class="slot-index">9</span>—</div>
+                                        <div class="hash-slot"><span class="slot-index">10</span>—</div>
+                                    </div>
+                                </div>
+                                <ul>
+                                    <li>PORKY incurred <strong>3 collisions</strong> before finding slot 8.</li>
+                                    <li>Final number of items = 6 ⇒ load factor = 6/11 ≈ 0.545.</li>
+                                </ul>
+                            </li>
+                        </ol>
+                        <button class="step-btn">Show Next Step</button>
+                    </div>
+                </div>
+
+                <!-- Hash Question 2 -->
+                <div class="question-card" id="hash-q2">
+                    <div class="question-title">Question 2: Successful vs. Unsuccessful Probing Cost</div>
+                    <p class="question-text">
+                        Using the final hash table from Question 1, trace the probe sequence for:
+                    </p>
+                    <ul>
+                        <li>A successful search for <strong>SCOOBY</strong>.</li>
+                        <li>An unsuccessful search for some key X that hashes initially to index 5 (same cluster).</li>
+                    </ul>
+                    <p class="question-meta">
+                        Assume <code>hash(X) = 5</code>, and X is not actually in the table.
+                    </p>
+                    <button class="reveal-btn">Reveal Solution</button>
+                    <div class="solution">
+                        <ol class="solution-steps">
+                            <li class="solution-step">
+                                <strong>Step 1 – Successful search for SCOOBY.</strong>
+                                <p>From Question 1, the relevant slots are:</p>
+                                <div class="step-visual">
+                                    <div class="hash-table-visual">
+                                        <div class="hash-slot filled"><span class="slot-index">5</span>BUGS</div>
+                                        <div class="hash-slot filled"><span class="slot-index">6</span>DAFFY</div>
+                                        <div class="hash-slot filled"><span class="slot-index">7</span>SCOOBY</div>
+                                        <div class="hash-slot filled"><span class="slot-index">8</span>PORKY</div>
+                                    </div>
+                                </div>
+                                <ul>
+                                    <li><code>hash(SCOOBY) = 7</code> ⟶ probe slot 7 first.</li>
+                                    <li>Slot 7 contains SCOOBY ⟶ found after <strong>1 probe</strong>.</li>
+                                </ul>
+                            </li>
+                            <li class="solution-step">
+                                <strong>Step 2 – Unsuccessful search for X with hash(X) = 5.</strong>
+                                <p>Linear probing sequence starting at index 5:</p>
+                                <ul>
+                                    <li>Probe 5: BUGS (≠ X) ⟶ continue.</li>
+                                    <li>Probe 6: DAFFY (≠ X) ⟶ continue.</li>
+                                    <li>Probe 7: SCOOBY (≠ X) ⟶ continue.</li>
+                                    <li>Probe 8: PORKY (≠ X) ⟶ continue.</li>
+                                    <li>Probe 9: empty ⟶ stop; X not in table.</li>
+                                </ul>
+                                <p>The unsuccessful search touches <strong>5 slots</strong> (indices 5, 6, 7, 8, 9).</p>
+                            </li>
+                            <li class="solution-step">
+                                <strong>Step 3 – Takeaway about cost.</strong>
+                                <ul>
+                                    <li>Successful search time is proportional to the length of the probe sequence up to the matching key.</li>
+                                    <li>Unsuccessful search must scan through an entire cluster until it hits an empty slot.</li>
+                                    <li>As load factor grows and clusters form, the average probe length (and thus cost) increases.</li>
+                                </ul>
+                            </li>
+                        </ol>
+                        <button class="step-btn">Show Next Step</button>
+                    </div>
+                </div>
+
+                <!-- Hash Question 3 -->
+                <div class="question-card" id="hash-q3">
+                    <div class="question-title">Question 3: Load Factor, Resizing, and Amortized Cost</div>
+                    <p class="question-text">
+                        Suppose you implement a hash table with:
+                    </p>
+                    <ul>
+                        <li>Initial capacity = 8.</li>
+                        <li>Load factor threshold = 0.7 (resize when items / capacity &gt; 0.7).</li>
+                        <li>Resizing strategy: double capacity (8 → 16 → 32 → ...), rehash all items.</li>
+                    </ul>
+                    <p class="question-meta">
+                        If you insert 12 distinct keys into an initially empty table, when do resizes happen,
+                        and how many total hash computations are performed?
+                    </p>
+                    <button class="reveal-btn">Reveal Solution</button>
+                    <div class="solution">
+                        <ol class="solution-steps">
+                            <li class="solution-step">
+                                <strong>Step 1 – Track load factor as we insert.</strong>
+                                <ul>
+                                    <li>Capacity = 8, threshold = 0.7 ⟶ max allowed items before resize ≈ 0.7 × 8 = 5.6.</li>
+                                    <li>So after inserting the 6th item, load factor becomes 6/8 = 0.75 &gt; 0.7 ⟶ trigger resize.</li>
+                                </ul>
+                                <p>Events so far:</p>
+                                <ul>
+                                    <li>Insert items 1–6: 6 hash computations (one per insertion).</li>
+                                    <li>After item 6, resize to capacity 16 and <strong>rehash the 6 existing items</strong> (6 more computations).</li>
+                                </ul>
+                            </li>
+                            <li class="solution-step">
+                                <strong>Step 2 – Continue inserting up to 12 items.</strong>
+                                <ul>
+                                    <li>Now capacity = 16.</li>
+                                    <li>Threshold = 0.7 ⇒ max items before next resize ≈ 0.7 × 16 = 11.2.</li>
+                                    <li>We currently have 6 items; we will insert items 7–12 ⟶ 6 more insertions.</li>
+                                </ul>
+                                <p>During these insertions:</p>
+                                <ul>
+                                    <li>For each of the 6 new items, we compute its hash once ⟶ 6 more hash computations.</li>
+                                    <li>After inserting the 12th item, load factor = 12/16 = 0.75 &gt; 0.7, so another resize <em>would</em> be triggered next, but we stop at 12 items per the question.</li>
+                                </ul>
+                            </li>
+                            <li class="solution-step">
+                                <strong>Step 3 – Total hash computations and amortized cost.</strong>
+                                <ul>
+                                    <li>6 hashes for initial inserts (items 1–6).</li>
+                                    <li>6 hashes to rehash those 6 items when growing from 8 → 16.</li>
+                                    <li>6 hashes for inserts 7–12.</li>
+                                </ul>
+                                <p><strong>Total = 6 + 6 + 6 = 18 hash executions</strong> for 12 insert operations.</p>
+                                <ul>
+                                    <li>Average (amortized) hash computations per insert = 18 / 12 = 1.5.</li>
+                                    <li>This shows that even with occasional expensive resizes, the <em>amortized</em> cost per insertion remains O(1).</li>
+                                </ul>
+                            </li>
+                        </ol>
+                        <button class="step-btn">Show Next Step</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ====================== RED-BLACK TREES SECTION ====================== -->
+        <div id="rbtrees" class="section">
+            <h2>Red-Black Trees: Balanced BST with O(log n) Guarantee</h2>
+            <p>CSE310 Data Structures and Algorithms: Advanced Tree Balancing</p>
+
+            <div class="learning-objective">
+                <strong>Learning Objectives:</strong> Understand RB tree properties, rotations, insertion fixup, and deletion fixup
+            </div>
+
+            <h3>The Problem: Unbalanced BSTs</h3>
+            <table class="comparison-table">
+                <tr>
+                    <th>Aspect</th>
+                    <th>Unbalanced BST (Worst Case)</th>
+                    <th>Red-Black Tree (Guaranteed)</th>
+                </tr>
+                <tr>
+                    <td>Height</td>
+                    <td>O(n)</td>
+                    <td>O(log n)</td>
+                </tr>
+                <tr>
+                    <td>Insert</td>
+                    <td>O(n)</td>
+                    <td>O(log n) with ≤2 rotations</td>
+                </tr>
+                <tr>
+                    <td>Delete</td>
+                    <td>O(n)</td>
+                    <td>O(log n) with ≤3 rotations</td>
+                </tr>
+            </table>
+
+            <h3>Red-Black Tree Definition</h3>
+            <p>A <strong>Red-Black Tree</strong> is a Binary Search Tree with an additional color attribute (RED or BLACK) on each node that enforces specific structural properties.</p>
+
+            <div class="highlight">
+                <strong>Core Idea:</strong> Each node is colored either RED or BLACK. These colors enforce constraints that automatically maintain balance.
+            </div>
+
+            <h3>RB Tree Properties</h3>
+            <div class="case-box">
+                <h4>Property 1: Color Attribute</h4>
+                <p>Each node is either RED or BLACK</p>
+            </div>
+
+            <div class="case-box">
+                <h4>Property 2: Root is Black</h4>
+                <p>The root node is always BLACK</p>
+            </div>
+
+            <div class="case-box">
+                <h4>Property 3: Null Leaves are Black</h4>
+                <p>All NIL (null) leaves are BLACK</p>
+            </div>
+
+            <div class="case-box">
+                <h4>Property 4: Red Node Constraint</h4>
+                <p>If a node is RED, then both its children must be BLACK (no two consecutive red nodes)</p>
+            </div>
+
+            <div class="case-box">
+                <h4>Property 5: Black Height Property</h4>
+                <p>All paths from any node to its descendant leaves contain the same number of BLACK nodes</p>
+            </div>
+
+            <h3>Why These Properties Ensure Balance</h3>
+            <ul>
+                <li><strong>Property 4</strong> prevents long chains - no chain of 3 nodes possible without violating constraints</li>
+                <li><strong>Property 5</strong> ensures the tree doesn't become skewed</li>
+                <li><strong>Result:</strong> Height ≤ 2·lg(n+1)</li>
+            </ul>
+
+            <div class="highlight">
+                <strong>Balance Guarantee:</strong> Longest path ≤ 2 × shortest path
+                <p style="margin-top: 10px;">Since all paths have same # of black nodes, and red nodes can't be consecutive, the tree remains approximately balanced</p>
+            </div>
+
+            <h3>Rotations: The Balancing Mechanism</h3>
+            <p><strong>Rotation</strong> is a local restructuring operation that maintains BST property while changing tree structure.</p>
+
+            <h4>Left Rotation on x:</h4>
+            <ul>
+                <li>Right child y moves up</li>
+                <li>y's left subtree becomes x's right subtree</li>
+                <li>Maintains BST property: x &lt; y</li>
+            </ul>
+
+            <h4>Right Rotation on x:</h4>
+            <ul>
+                <li>Left child y moves up</li>
+                <li>y's right subtree becomes x's left subtree</li>
+                <li>Mirror image of left rotation</li>
+            </ul>
+
+            <h3>Insertion in Red-Black Trees</h3>
+            <p><strong>Strategy:</strong> Always insert as RED because this is less likely to violate Property 5 (black height)</p>
+
+            <h4>The Problem:</h4>
+            <p>New red node might have red parent (violates Property 4)</p>
+
+            <h4>The Solution:</h4>
+            <p>Walk up tree fixing violations - three main cases based on uncle's color and node position</p>
+
+            <!-- Insertion Case 1 -->
+            <div class="case-box">
+                <h4>Case 1: Uncle is RED (Recoloring Case)</h4>
+                <p>
+                    Parent <strong>P</strong> and uncle <strong>U</strong> are both RED, grandparent <strong>G</strong> is BLACK,
+                    and new node <strong>N</strong> is RED under P.
+                </p>
+
+                <div class="step-visual">
+                    <div style="display:inline-block; margin:0 15px; vertical-align:top;">
+                        <p style="font-size:0.9em; margin-bottom:6px;"><strong>Before fix-up</strong></p>
+                        <ul class="tree">
+                            <li>
+                                <span class="tree-node black">G</span>
+                                <ul>
+                                    <li>
+                                        <span class="tree-node red">P</span>
+                                        <ul>
+                                            <li><span class="tree-node red">N</span></li>
+                                        </ul>
+                                    </li>
+                                    <li><span class="tree-node red">U</span></li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </div>
+                    <div style="display:inline-block; margin:0 15px; vertical-align:top;">
+                        <p style="font-size:0.9em; margin-bottom:6px;"><strong>After recolor</strong></p>
+                        <ul class="tree">
+                            <li>
+                                <span class="tree-node red">G</span>
+                                <ul>
+                                    <li>
+                                        <span class="tree-node black">P</span>
+                                        <ul>
+                                            <li><span class="tree-node red">N</span></li>
+                                        </ul>
+                                    </li>
+                                    <li><span class="tree-node black">U</span></li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <ol>
+                    <li>Recolor parent P and uncle U from RED → BLACK.</li>
+                    <li>Recolor grandparent G from BLACK → RED.</li>
+                    <li>Now treat G as the newly inserted node and move the “fix-up” pointer up to G.</li>
+                    <li>If G is the root, recolor it BLACK at the end to satisfy Property 2.</li>
+                </ol>
+            </div>
+
+            <!-- Insertion Case 2 -->
+            <div class="case-box">
+                <h4>Case 2: Uncle BLACK, Triangle Configuration</h4>
+                <p>
+                    Uncle <strong>U</strong> is BLACK, and node <strong>N</strong> forms a “triangle” with parent <strong>P</strong> and grandparent <strong>G</strong>.
+                    Example: N is the right child of a left child (left-right) or left child of a right child (right-left).
+                </p>
+
+                <div class="step-visual">
+                    <div style="display:inline-block; margin:0 15px; vertical-align:top;">
+                        <p style="font-size:0.9em; margin-bottom:6px;"><strong>Before fix-up (left-right example)</strong></p>
+                        <ul class="tree">
+                            <li>
+                                <span class="tree-node black">G</span>
+                                <ul>
+                                    <li>
+                                        <span class="tree-node red">P</span>
+                                        <ul>
+                                            <li><span class="tree-node red">N</span></li>
+                                        </ul>
+                                    </li>
+                                    <li><span class="tree-node black">U</span></li>
+                                </ul>
+                            </li>
+                        </ul>
+                        <p style="font-size:0.8em; margin-top:4px;">N is right child of P, P is left child of G (triangle)</p>
+                    </div>
+                    <div style="display:inline-block; margin:0 15px; vertical-align:top;">
+                        <p style="font-size:0.9em; margin-bottom:6px;"><strong>After first rotation (convert to Case 3)</strong></p>
+                        <ul class="tree">
+                            <li>
+                                <span class="tree-node black">G</span>
+                                <ul>
+                                    <li>
+                                        <span class="tree-node red">N</span>
+                                        <ul>
+                                            <li><span class="tree-node red">P</span></li>
+                                        </ul>
+                                    </li>
+                                    <li><span class="tree-node black">U</span></li>
+                                </ul>
+                            </li>
+                        </ul>
+                        <p style="font-size:0.8em; margin-top:4px;">Rotate left around P ⟶ N becomes child of G</p>
+                    </div>
+                </div>
+
+                <ol>
+                    <li>Because N and P form a triangle with G, perform a rotation at P to “straighten” the path.</li>
+                    <li>For the left-right case:
+                        <ul>
+                            <li>Rotate left around P so that N moves up and P becomes N’s left child.</li>
+                        </ul>
+                    </li>
+                    <li>After this rotation, the configuration becomes a “line” (N is now directly under G).</li>
+                    <li>Relabel N as the new “inserted” node and fall through to Case 3 on the new configuration.</li>
+                </ol>
+            </div>
+
+            <!-- Insertion Case 3 -->
+            <div class="case-box">
+                <h4>Case 3: Uncle BLACK, Line Configuration</h4>
+                <p>
+                    Uncle <strong>U</strong> is BLACK, and node <strong>N</strong>, parent <strong>P</strong>, and grandparent <strong>G</strong>
+                    form a straight line (e.g., left-left or right-right).
+                </p>
+
+                <div class="step-visual">
+                    <div style="display:inline-block; margin:0 15px; vertical-align:top;">
+                        <p style="font-size:0.9em; margin-bottom:6px;"><strong>Before fix-up (left-left example)</strong></p>
+                        <ul class="tree">
+                            <li>
+                                <span class="tree-node black">G</span>
+                                <ul>
+                                    <li>
+                                        <span class="tree-node red">P</span>
+                                        <ul>
+                                            <li><span class="tree-node red">N</span></li>
+                                        </ul>
+                                    </li>
+                                    <li><span class="tree-node black">U</span></li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </div>
+                    <div style="display:inline-block; margin:0 15px; vertical-align:top;">
+                        <p style="font-size:0.9em; margin-bottom:6px;"><strong>After rotation &amp; recolor</strong></p>
+                        <ul class="tree">
+                            <li>
+                                <span class="tree-node black">P</span>
+                                <ul>
+                                    <li><span class="tree-node red">N</span></li>
+                                    <li>
+                                        <span class="tree-node red">G</span>
+                                        <ul>
+                                            <li><span class="tree-node black">U</span></li>
+                                        </ul>
+                                    </li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <ol>
+                    <li>Perform a rotation at G to bring P up (right rotation in left-left case, left rotation in right-right case).</li>
+                    <li>After the rotation:
+                        <ul>
+                            <li>Color P BLACK.</li>
+                            <li>Color G RED.</li>
+                        </ul>
+                    </li>
+                    <li>This fixes the “red-red” violation and preserves the black-height property.</li>
+                    <li>The path from the root down remains short, maintaining O(log n) height.</li>
+                </ol>
+            </div>
+
+            <h4>Insertion Complexity:</h4>
+            <ul>
+                <li>Each iteration either stops (Cases 2–3) or moves z up 2 levels (Case 1)</li>
+                <li>Maximum iterations: O(log n) because tree height is O(log n)</li>
+                <li><strong>Total time:</strong> O(log n) iterations × O(1) per iteration = <strong>O(log n)</strong></li>
+            </ul>
+
+            <h3>Deletion in Red-Black Trees</h3>
+            <p><strong>Why it's complex:</strong> Deleting a BLACK node violates black-height property</p>
+
+            <h4>The Core Problem:</h4>
+            <p>When a BLACK node is deleted, one path loses a black node. This violates Property 5 (black-height constraint)</p>
+
+            <h4>The Solution:</h4>
+            <p>Mark replacement node as "double-black" - conceptually carrying an extra black. Propagate this mark up until it can be eliminated through recoloring and rotations.</p>
+
+            <!-- Deletion Case 1 -->
+            <div class="case-box">
+                <h4>Case 1: Sibling is RED</h4>
+                <p>
+                    Node <strong>x</strong> is double-black, its sibling <strong>S</strong> is RED, and parent <strong>P</strong> is BLACK.
+                    We rotate to transform into a case where the sibling is BLACK.
+                </p>
+
+                <div class="step-visual">
+                    <div style="display:inline-block; margin:0 15px; vertical-align:top;">
+                        <p style="font-size:0.9em; margin-bottom:6px;"><strong>Before fix-up (x is left child)</strong></p>
+                        <ul class="tree">
+                            <li>
+                                <span class="tree-node black">P</span>
+                                <ul>
+                                    <li><span class="tree-node black">x</span></li>
+                                    <li>
+                                        <span class="tree-node red">S</span>
+                                    </li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </div>
+                    <div style="display:inline-block; margin:0 15px; vertical-align:top;">
+                        <p style="font-size:0.9em; margin-bottom:6px;"><strong>After rotation &amp; recolor</strong></p>
+                        <ul class="tree">
+                            <li>
+                                <span class="tree-node black">S</span>
+                                <ul>
+                                    <li>
+                                        <span class="tree-node red">P</span>
+                                        <ul>
+                                            <li><span class="tree-node black">x</span></li>
+                                        </ul>
+                                    </li>
+                                    <li><!-- S's other child subtree --></li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <ol>
+                    <li>Recolor S to BLACK and P to RED.</li>
+                    <li>If x is a left child, perform a left rotation on P (mirror: right rotation if x is a right child).</li>
+                    <li>After rotation, x still has “double-black”, but its new sibling is BLACK.</li>
+                    <li>Now you are in one of Cases 2–4 with a BLACK sibling and can continue the fix-up.</li>
+                </ol>
+            </div>
+
+            <!-- Deletion Case 2 -->
+            <div class="case-box">
+                <h4>Case 2: Sibling BLACK, Both Sibling's Children BLACK</h4>
+                <p>
+                    Sibling <strong>S</strong> is BLACK and both of S's children are BLACK (or NIL). We push the extra black up.
+                </p>
+
+                <div class="step-visual">
+                    <div style="display:inline-block; margin:0 15px; vertical-align:top;">
+                        <p style="font-size:0.9em; margin-bottom:6px;"><strong>Before</strong></p>
+                        <ul class="tree">
+                            <li>
+                                <span class="tree-node black">P</span>
+                                <ul>
+                                    <li><span class="tree-node black">x</span></li>
+                                    <li>
+                                        <span class="tree-node black">S</span>
+                                        <ul>
+                                            <li><span class="tree-node black">A</span></li>
+                                            <li><span class="tree-node black">B</span></li>
+                                        </ul>
+                                    </li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </div>
+                    <div style="display:inline-block; margin:0 15px; vertical-align:top;">
+                        <p style="font-size:0.9em; margin-bottom:6px;"><strong>After recolor (x still conceptually double-black)</strong></p>
+                        <ul class="tree">
+                            <li>
+                                <span class="tree-node black">P</span>
+                                <ul>
+                                    <li><span class="tree-node black">x</span></li>
+                                    <li>
+                                        <span class="tree-node red">S</span>
+                                        <ul>
+                                            <li><span class="tree-node black">A</span></li>
+                                            <li><span class="tree-node black">B</span></li>
+                                        </ul>
+                                    </li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <ol>
+                    <li>Recolor sibling S from BLACK → RED.</li>
+                    <li>“Remove” one black from both x and S by moving the double-black problem up to the parent P.</li>
+                    <li>If P was RED, recoloring it to BLACK ends the fix-up.</li>
+                    <li>If P was BLACK, it now becomes double-black and you continue the process at P.</li>
+                </ol>
+            </div>
+
+            <!-- Deletion Case 3 -->
+            <div class="case-box">
+                <h4>Case 3: Sibling BLACK, Near Child RED, Far Child BLACK</h4>
+                <p>
+                    Sibling <strong>S</strong> is BLACK, the child of S closer to x (the “near” child) is RED,
+                    and the “far” child is BLACK. We rotate and recolor to transform into Case 4.
+                </p>
+
+                <div class="step-visual">
+                    <div style="display:inline-block; margin:0 15px; vertical-align:top;">
+                        <p style="font-size:0.9em; margin-bottom:6px;"><strong>Before (x is left child, near child = S<sub>L</sub>)</strong></p>
+                        <ul class="tree">
+                            <li>
+                                <span class="tree-node black">P</span>
+                                <ul>
+                                    <li><span class="tree-node black">x</span></li>
+                                    <li>
+                                        <span class="tree-node black">S</span>
+                                        <ul>
+                                            <li><span class="tree-node red">S<sub>L</sub></span></li>
+                                            <li><span class="tree-node black">S<sub>R</sub></span></li>
+                                        </ul>
+                                    </li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </div>
+                    <div style="display:inline-block; margin:0 15px; vertical-align:top;">
+                        <p style="font-size:0.9em; margin-bottom:6px;"><strong>After rotation around S</strong></p>
+                        <ul class="tree">
+                            <li>
+                                <span class="tree-node black">P</span>
+                                <ul>
+                                    <li><span class="tree-node black">x</span></li>
+                                    <li>
+                                        <span class="tree-node black">S<sub>L</sub></span>
+                                        <ul>
+                                            <li><span class="tree-node black">S</span></li>
+                                            <li><span class="tree-node black">S<sub>R</sub></span></li>
+                                        </ul>
+                                    </li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <ol>
+                    <li>Recolor S<sub>L</sub> to BLACK and S to RED.</li>
+                    <li>Rotate right around S (if x is left child; mirror with left rotation if x is right child).</li>
+                    <li>Now the new sibling of x has a RED far child and BLACK near child ⟶ configuration of Case 4.</li>
+                    <li>Proceed to Case 4 using this new configuration.</li>
+                </ol>
+            </div>
+
+            <!-- Deletion Case 4 -->
+            <div class="case-box">
+                <h4>Case 4: Sibling BLACK, Far Child RED</h4>
+                <p>
+                    Sibling <strong>S</strong> is BLACK and its far child (farther from x) is RED. This is the final case
+                    that lets us remove the double-black and restore all properties with a single rotation.
+                </p>
+
+                <div class="step-visual">
+                    <div style="display:inline-block; margin:0 15px; vertical-align:top;">
+                        <p style="font-size:0.9em; margin-bottom:6px;"><strong>Before (x is left child, far child = S<sub>R</sub>)</strong></p>
+                        <ul class="tree">
+                            <li>
+                                <span class="tree-node black">P</span>
+                                <ul>
+                                    <li><span class="tree-node black">x</span></li>
+                                    <li>
+                                        <span class="tree-node black">S</span>
+                                        <ul>
+                                            <li><span class="tree-node black">S<sub>L</sub></span></li>
+                                            <li><span class="tree-node red">S<sub>R</sub></span></li>
+                                        </ul>
+                                    </li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </div>
+                    <div style="display:inline-block; margin:0 15px; vertical-align:top;">
+                        <p style="font-size:0.9em; margin-bottom:6px;"><strong>After rotation &amp; recolor</strong></p>
+                        <ul class="tree">
+                            <li>
+                                <span class="tree-node black">S</span>
+                                <ul>
+                                    <li>
+                                        <span class="tree-node black">P</span>
+                                        <ul>
+                                            <li><span class="tree-node black">x</span></li>
+                                            <li><span class="tree-node black">S<sub>L</sub></span></li>
+                                        </ul>
+                                    </li>
+                                    <li><span class="tree-node black">S<sub>R</sub></span></li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <ol>
+                    <li>Set S’s color to P’s color (copy parent’s color down into S).</li>
+                    <li>Recolor P and S<sub>R</sub> to BLACK.</li>
+                    <li>Perform a left rotation at P (if x is left child; mirror with right rotation if x is right child).</li>
+                    <li>This removes the double-black on x and restores all RB properties; the fix-up terminates.</li>
+                </ol>
+            </div>
+
+            <h3>Performance Summary</h3>
+            <table class="comparison-table">
+                <tr>
+                    <th>Operation</th>
+                    <th>Time Complexity</th>
+                    <th>Details</th>
+                </tr>
+                <tr>
+                    <td>Search</td>
+                    <td>O(log n)</td>
+                    <td>Height is O(log n), standard BST search</td>
+                </tr>
+                <tr>
+                    <td>Insertion</td>
+                    <td>O(log n)</td>
+                    <td>BST insert O(log n) + fixup O(log n), ≤2 rotations</td>
+                </tr>
+                <tr>
+                    <td>Deletion</td>
+                    <td>O(log n)</td>
+                    <td>BST delete O(log n) + fixup O(log n), ≤3 rotations</td>
+                </tr>
+                <tr>
+                    <td>Space</td>
+                    <td>O(n)</td>
+                    <td>One color bit per node + parent pointer</td>
+                </tr>
+            </table>
+
+            <h3>Real-World Applications</h3>
+            <p><strong>Java Collections:</strong></p>
+            <ul>
+                <li>java.util.TreeMap - sorted key-value storage</li>
+                <li>java.util.TreeSet - sorted set with O(log n) operations</li>
+            </ul>
+
+            <p><strong>C++ STL:</strong></p>
+            <ul>
+                <li>std::map, std::set, std::multimap, std::multiset</li>
+            </ul>
+
+            <p><strong>System Software:</strong></p>
+            <ul>
+                <li><strong>CFS Scheduler:</strong> Linux uses RB trees for process scheduling</li>
+                <li><strong>Database Indexing:</strong> B+ trees and RB tree variants for in-memory indexing</li>
+            </ul>
+
+            <h3>RB Trees vs AVL Trees</h3>
+            <table class="comparison-table">
+                <tr>
+                    <th>Aspect</th>
+                    <th>Red-Black Tree</th>
+                    <th>AVL Tree</th>
+                </tr>
+                <tr>
+                    <td>Balance</td>
+                    <td>h ≤ 2·lg(n+1)</td>
+                    <td>h ≤ 1.44·lg(n)</td>
+                </tr>
+                <tr>
+                    <td>Insert Rotations</td>
+                    <td>≤2</td>
+                    <td>O(log n)</td>
+                </tr>
+                <tr>
+                    <td>Delete Rotations</td>
+                    <td>≤3</td>
+                    <td>O(log n)</td>
+                </tr>
+                <tr>
+                    <td>Best For</td>
+                    <td>Frequent updates</td>
+                    <td>Search-heavy workloads</td>
+                </tr>
+            </table>
+
+            <h3>References</h3>
+            <ul>
+                <li><strong>CLRS:</strong> "Introduction to Algorithms" Chapter 13</li>
+                <li><strong>Visualizations:</strong> VisuAlgo and Programiz have excellent step-by-step animations</li>
+                <li><strong>Practice:</strong> Implement insertion and deletion fixup to master these concepts</li>
+            </ul>
+
+            <!-- RB PRACTICE QUESTIONS -->
+            <div class="question-section">
+                <h3>Interactive Red-Black Tree Practice</h3>
+
+                <!-- RB Question 1 -->
+                <div class="question-card" id="rb-q1">
+                    <div class="question-title">Question 1: Step-by-Step Red-Black Insertions</div>
+                    <p class="question-text">
+                        Starting from an empty Red-Black tree, insert the keys
+                        [41, 38, 31, 12, 19, 8] using the standard RB insertion algorithm
+                        (new node is RED, then fix-up).
+                    </p>
+                    <ul>
+                        <li>For each insertion, state which of the three insertion cases (or their mirror) applies.</li>
+                        <li>Identify when rotations occur.</li>
+                        <li>Show the final tree with correct colors.</li>
+                    </ul>
+                    <button class="reveal-btn">Reveal Solution</button>
+                    <div class="solution">
+                        <ol class="solution-steps">
+                            <li class="solution-step">
+                                <strong>Step 1 – Insert 41.</strong>
+                                <ul>
+                                    <li>Tree was empty; 41 becomes the root.</li>
+                                    <li>Root must be BLACK (Property 2).</li>
+                                </ul>
+                                <div class="step-visual">
+                                    <ul class="tree">
+                                        <li><span class="tree-node black">41</span></li>
+                                    </ul>
+                                </div>
+                            </li>
+                            <li class="solution-step">
+                                <strong>Step 2 – Insert 38.</strong>
+                                <ul>
+                                    <li>38 &lt; 41 ⟶ insert as left child of 41, color RED.</li>
+                                    <li>Parent (41) is BLACK, so no properties are violated.</li>
+                                </ul>
+                                <div class="step-visual">
+                                    <ul class="tree">
+                                        <li>
+                                            <span class="tree-node black">41</span>
+                                            <ul>
+                                                <li><span class="tree-node red">38</span></li>
+                                            </ul>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </li>
+                            <li class="solution-step">
+                                <strong>Step 3 – Insert 31 (first rotation).</strong>
+                                <ul>
+                                    <li>31 &lt; 41, 31 &lt; 38 ⟶ left child of 38, colored RED.</li>
+                                    <li>Violation: 31 (RED) with parent 38 (RED) ⟶ Property 4 break.</li>
+                                    <li>Uncle of 31 is NIL (BLACK) and the configuration is a straight line (31 is left child of left child).</li>
+                                    <li>This is Case 3 (line configuration): right-rotate around 41 and recolor.</li>
+                                </ul>
+                                <p>After fix-up:</p>
+                                <ul>
+                                    <li>38 becomes the new root (BLACK).</li>
+                                    <li>31 and 41 become its RED children.</li>
+                                </ul>
+                                <div class="step-visual">
+                                    <ul class="tree">
+                                        <li>
+                                            <span class="tree-node black">38</span>
+                                            <ul>
+                                                <li><span class="tree-node red">31</span></li>
+                                                <li><span class="tree-node red">41</span></li>
+                                            </ul>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </li>
+                            <li class="solution-step">
+                                <strong>Step 4 – Insert 12 (recoloring case).</strong>
+                                <ul>
+                                    <li>12 &lt; 38, 12 &lt; 31 ⟶ left child of 31, color RED.</li>
+                                    <li>Parent 31 is RED and uncle 41 is RED ⟶ Case 1 (uncle RED).</li>
+                                    <li>Recolor parent and uncle to BLACK, grandparent (38) to RED.</li>
+                                    <li>Because 38 is the root, we recolor it back to BLACK at the end.</li>
+                                </ul>
+                                <p>Resulting tree:</p>
+                                <div class="step-visual">
+                                    <ul class="tree">
+                                        <li>
+                                            <span class="tree-node black">38</span>
+                                            <ul>
+                                                <li>
+                                                    <span class="tree-node black">31</span>
+                                                    <ul>
+                                                        <li><span class="tree-node red">12</span></li>
+                                                    </ul>
+                                                </li>
+                                                <li><span class="tree-node black">41</span></li>
+                                            </ul>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </li>
+                            <li class="solution-step">
+                                <strong>Step 5 – Insert 19 (rotation + recolor).</strong>
+                                <ul>
+                                    <li>19 &lt; 38, 19 &lt; 31, 19 &gt; 12 ⟶ right child of 12 (RED).</li>
+                                    <li>Parent 12 is RED, uncle (right child of 31) is NIL (BLACK).</li>
+                                    <li>Configuration is a <em>triangle</em> (left-right) w.r.t. grandparent 31 ⟶ Case 2 then Case 3.</li>
+                                    <li>First, rotate left around 12, then rotate right around 31 with recoloring.</li>
+                                </ul>
+                                <p>After fix-up, the left subtree of 38 becomes:</p>
+                                <ul>
+                                    <li>19 (BLACK) as left child of 38.</li>
+                                    <li>12 (RED) as left child of 19.</li>
+                                    <li>31 (RED) as right child of 19.</li>
+                                </ul>
+                            </li>
+                            <li class="solution-step">
+                                <strong>Step 6 – Insert 8 (final recoloring).</strong>
+                                <ul>
+                                    <li>8 &lt; 38, 8 &lt; 19, 8 &lt; 12 ⟶ left child of 12, color RED.</li>
+                                    <li>Parent 12 is RED and uncle 31 is RED ⟶ Case 1 again.</li>
+                                    <li>Recolor 12 and 31 to BLACK, recolor 19 to RED.</li>
+                                    <li>Parent of 19 is 38 (BLACK), so the loop terminates and 38 stays BLACK.</li>
+                                </ul>
+                                <p><strong>Final Red-Black tree:</strong></p>
+                                <div class="step-visual">
+                                    <ul class="tree">
+                                        <li>
+                                            <span class="tree-node black">38</span>
+                                            <ul>
+                                                <li>
+                                                    <span class="tree-node red">19</span>
+                                                    <ul>
+                                                        <li>
+                                                            <span class="tree-node black">12</span>
+                                                            <ul>
+                                                                <li><span class="tree-node red">8</span></li>
+                                                            </ul>
+                                                        </li>
+                                                        <li><span class="tree-node black">31</span></li>
+                                                    </ul>
+                                                </li>
+                                                <li><span class="tree-node black">41</span></li>
+                                            </ul>
+                                        </li>
+                                    </ul>
+                                </div>
+                                <p>
+                                    All RB properties hold: root is BLACK, no two REDs in a row,
+                                    and every path from a node to NIL has the same number of BLACK nodes.
+                                </p>
+                            </li>
+                        </ol>
+                        <button class="step-btn">Show Next Step</button>
+                    </div>
+                </div>
+
+                <!-- RB Question 2 -->
+                <div class="question-card" id="rb-q2-q">
+                    <div class="question-title">Question 2: Computing Black Height</div>
+                    <p class="question-text">
+                        Using the final Red-Black tree from Question 1, compute the black height
+                        <code>bh(x)</code> for each internal node x, where <code>bh(x)</code> is the number of BLACK
+                        nodes on any simple path from x <em>down to</em> a NIL leaf (excluding x itself).
+                    </p>
+                    <ul>
+                        <li>Verify that all root-to-leaf paths have the same black height.</li>
+                        <li>Explain how this implies the tree is approximately balanced.</li>
+                    </ul>
+                    <button class="reveal-btn">Reveal Solution</button>
+                    <div class="solution">
+                        <ol class="solution-steps">
+                            <li class="solution-step">
+                                <strong>Step 1 – Redraw the final tree with colors.</strong>
+                                <div class="step-visual">
+                                    <ul class="tree">
+                                        <li>
+                                            <span class="tree-node black">38</span>
+                                            <ul>
+                                                <li>
+                                                    <span class="tree-node red">19</span>
+                                                    <ul>
+                                                        <li>
+                                                            <span class="tree-node black">12</span>
+                                                            <ul>
+                                                                <li><span class="tree-node red">8</span></li>
+                                                            </ul>
+                                                        </li>
+                                                        <li><span class="tree-node black">31</span></li>
+                                                    </ul>
+                                                </li>
+                                                <li><span class="tree-node black">41</span></li>
+                                            </ul>
+                                        </li>
+                                    </ul>
+                                </div>
+                                We treat every missing child pointer as a NIL leaf (BLACK).
+                            </li>
+                            <li class="solution-step">
+                                <strong>Step 2 – Compute black height bottom-up.</strong>
+                                <ul>
+                                    <li>All NIL children are BLACK with <strong>bh(NIL) = 0</strong> by definition.</li>
+                                    <li>Node 8 is RED, its children are NIL ⟶ the number of BLACK nodes below it is 0, so <strong>bh(8) = 0</strong>.</li>
+                                    <li>Node 12 is BLACK with left child 8 and right child NIL:
+                                        both subpaths from 12 to leaves contain exactly one BLACK node (NIL) after 12,
+                                        so <strong>bh(12) = 1</strong>.</li>
+                                    <li>Node 31 is BLACK with two NIL children ⟶ <strong>bh(31) = 1</strong>.</li>
+                                    <li>Node 41 is BLACK with NIL children ⟶ <strong>bh(41) = 1</strong>.</li>
+                                    <li>Node 19 is RED with children 12 and 31
+                                        ⟶ both subtrees below 19 have black height 1, so <strong>bh(19) = 1</strong>.</li>
+                                </ul>
+                            </li>
+                            <li class="solution-step">
+                                <strong>Step 3 – Black height of the root and balance implication.</strong>
+                                <ul>
+                                    <li>From the root 38 (BLACK), any path to a NIL leaf passes through
+                                        some number of BLACK nodes below it (here 1) plus the NIL leaf.</li>
+                                    <li>Thus <strong>bh(38) = 2</strong> in the conventional RB definition.</li>
+                                    <li>Every root-to-leaf path has the same number of BLACK nodes (2), so Property 5 holds.</li>
+                                    <li>Because reds cannot be consecutive, the longest path from the root can have
+                                        at most twice as many nodes as the shortest path.</li>
+                                    <li>Therefore the tree height h is at most <strong>2 × bh(root)</strong>, which is O(log n),
+                                        giving logarithmic search, insert, and delete time.</li>
+                                </ul>
+                            </li>
+                        </ol>
+                        <button class="step-btn">Show Next Step</button>
+                    </div>
+                </div>
+
+                <!-- RB Question 3 -->
+                <div class="question-card" id="rb-q3-q">
+                    <div class="question-title">Question 3: Proving h ≤ 2·log₂(n + 1)</div>
+                    <p class="question-text">
+                        Let a Red-Black tree have <code>n</code> internal nodes and height <code>h</code>.
+                        Show that <code>h ≤ 2·log₂(n + 1)</code>.
+                    </p>
+                    <ul>
+                        <li>Use the fact that the black height of the root is at least h/2.</li>
+                        <li>Relate black height to a lower bound on the number of nodes.</li>
+                    </ul>
+                    <button class="reveal-btn">Reveal Solution</button>
+                    <div class="solution">
+                        <ol class="solution-steps">
+                            <li class="solution-step">
+                                <strong>Step 1 – At least half the nodes on any root-to-leaf path are BLACK.</strong>
+                                <ul>
+                                    <li>No two RED nodes can be adjacent (Property 4).</li>
+                                    <li>Along any path, RED nodes must be separated by at least one BLACK node.</li>
+                                    <li>Therefore, the number of RED nodes on a path is at most the number of BLACK nodes.</li>
+                                    <li>So the length of the path h is at most 2 × (number of BLACK nodes on that path).</li>
+                                </ul>
+                                <p>Let b be the black height of the root (number of BLACK nodes on any root→leaf path,
+                                    excluding the root in the formal definition); then <strong>h ≤ 2b</strong>.</p>
+                            </li>
+                            <li class="solution-step">
+                                <strong>Step 2 – Minimum number of nodes for a given black height.</strong>
+                                <ul>
+                                    <li>Consider a RB tree where every node on every path is BLACK (no RED nodes at all).</li>
+                                    <li>Such a tree with black height b is a perfectly balanced BLACK-only tree.</li>
+                                    <li>This tree has at least <strong>2<sup>b</sup> − 1</strong> internal nodes
+                                        (full binary tree of height b − 1 with only BLACK nodes).</li>
+                                    <li>Any RB tree with black height b has at least that many nodes:</li>
+                                </ul>
+                                <p><strong>n ≥ 2<sup>b</sup> − 1</strong>.</p>
+                            </li>
+                            <li class="solution-step">
+                                <strong>Step 3 – Combine inequalities to bound h in terms of n.</strong>
+                                <ul>
+                                    <li>From Step 2: <code>n ≥ 2^b − 1 ⇒ n + 1 ≥ 2^b</code>.</li>
+                                    <li>Taking log₂ on both sides:
+                                        <code>log₂(n + 1) ≥ b</code>.</li>
+                                    <li>From Step 1: <code>h ≤ 2b</code>.</li>
+                                    <li>Therefore: <code>h ≤ 2 · b ≤ 2 · log₂(n + 1)</code>.</li>
+                                </ul>
+                                <p>
+                                    This proves that the height of a Red-Black tree is always O(log n),
+                                    which is the key to its worst-case guarantees.
+                                </p>
+                            </li>
+                        </ol>
+                        <button class="step-btn">Show Next Step</button>
+                    </div>
+                </div>
+            </div>
+        </div> <!-- end rbtrees -->
+    </div> <!-- end content -->
+</div> <!-- end container -->
+
+<script>
+    // Simple tab switching, called from onclick in the buttons
+    function openTab(tabName, button) {
+        var sections = document.querySelectorAll('.section');
+        var buttons = document.querySelectorAll('.tab-btn');
+
+        buttons.forEach(function (btn) {
+            btn.classList.remove('active');
+        });
+
+        sections.forEach(function (sec) {
+            sec.classList.remove('active');
+        });
+
+        button.classList.add('active');
+        var target = document.getElementById(tabName);
+        if (target) {
+            target.classList.add('active');
+        }
+    }
+
+    // Initialize interactive Q&A after DOM is fully loaded
+    window.addEventListener('DOMContentLoaded', function () {
+        document.querySelectorAll('.question-card').forEach(function (card) {
+            var revealBtn = card.querySelector('.reveal-btn');
+            var solution = card.querySelector('.solution');
+            var stepBtn = solution ? solution.querySelector('.step-btn') : null;
+            var steps = solution ? solution.querySelectorAll('.solution-step') : [];
+            var currentStep = 0;
+
+            if (!revealBtn || !solution) return;
+
+            // Hide all steps initially
+            steps.forEach(function (step) {
+                step.style.display = 'none';
+            });
+            if (stepBtn) {
+                stepBtn.style.display = 'none';
+            }
+
+            revealBtn.addEventListener('click', function () {
+                var visible = solution.classList.toggle('visible');
+
+                if (visible) {
+                    revealBtn.textContent = 'Hide Solution';
+
+                    steps.forEach(function (step, index) {
+                        step.style.display = (index === 0) ? 'list-item' : 'none';
+                    });
+                    currentStep = steps.length > 0 ? 1 : 0;
+
+                    if (stepBtn && steps.length > 1) {
+                        stepBtn.style.display = 'inline-block';
+                        stepBtn.disabled = false;
+                        stepBtn.textContent = 'Show Next Step';
+                    }
+                } else {
+                    revealBtn.textContent = 'Reveal Solution';
+                    if (stepBtn) {
+                        stepBtn.style.display = 'none';
+                    }
+                }
+            });
+
+            if (stepBtn) {
+                stepBtn.addEventListener('click', function () {
+                    if (currentStep < steps.length) {
+                        steps[currentStep].style.display = 'list-item';
+                        currentStep++;
+
+                        if (currentStep >= steps.length) {
+                            stepBtn.disabled = true;
+                            stepBtn.textContent = 'All steps shown';
+                        }
+                    }
+                });
+            }
+        });
+    });
+</script>
+</body>
+</html>
