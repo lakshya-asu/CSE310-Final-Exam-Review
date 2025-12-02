@@ -243,7 +243,7 @@
             color: #1565c0;
         }
 
-        /* ---- Tree with edges (stable, aligned connectors) ---- */
+        /* ---- Tree with edges (flex-based, 90° connectors) ---- */
 
         .step-visual {
             margin: 10px 0 20px;
@@ -256,20 +256,26 @@
             position: relative;
         }
 
-        .tree, .tree ul {
+        .tree,
+        .tree ul {
             list-style-type: none;
         }
 
         .tree ul {
             padding-top: 20px;
             position: relative;
+            display: flex;
+            justify-content: center;
         }
 
         .tree li {
-            float: left;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
             text-align: center;
             position: relative;
             padding: 20px 5px 0 5px;
+            flex: 0 0 auto;
         }
 
         .tree li::before,
@@ -292,15 +298,6 @@
             border-left: 1px solid #aaa;
         }
 
-        .tree li:only-child::before,
-        .tree li:only-child::after {
-            display: none;
-        }
-
-        .tree li:only-child {
-            padding-top: 0;
-        }
-
         .tree ul::before {
             content: '';
             position: absolute;
@@ -314,6 +311,11 @@
         .tree li > .tree-node {
             margin: 0 auto;
             display: inline-flex;
+        }
+
+        /* NEW: shift any single child to the LEFT so it doesn't sit centered */
+        .tree ul > li:only-child {
+            transform: translateX(-40px);
         }
 
         /* ---- Interactive Question Styles ---- */
@@ -614,12 +616,7 @@
                                                 <li>
                                                     <span class="tree-node">10</span>
                                                     <ul>
-                                                        <li>
-                                                            <span class="tree-node">14</span>
-                                                            <ul>
-                                                                <li><span class="tree-node">13</span></li>
-                                                            </ul>
-                                                        </li>
+                                                        <li><span class="tree-node">13</span></li>
                                                     </ul>
                                                 </li>
                                             </ul>
@@ -685,9 +682,7 @@
                                                         </li>
                                                     </ul>
                                                 </li>
-                                                <li>
-                                                    <span class="tree-node">13</span>
-                                                </li>
+                                                <li><span class="tree-node">13</span></li>
                                             </ul>
                                         </li>
                                     </ul>
